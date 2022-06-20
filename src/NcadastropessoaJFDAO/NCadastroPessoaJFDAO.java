@@ -65,5 +65,4 @@ public class NCadastroPessoaJFDAO implements ActionListener {
             cCad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
     }
-
 }

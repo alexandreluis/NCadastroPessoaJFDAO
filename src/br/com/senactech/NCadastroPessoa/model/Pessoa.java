@@ -26,7 +26,7 @@ public class Pessoa {
     }
 
     /**
-     * Conntrutor com todos os atributos como parâmetro.
+     * Construtor com todos os atributos como parâmetro.
      * @param idPessoa
      * @param nomePessoa
      * @param cpf

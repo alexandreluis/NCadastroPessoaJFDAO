@@ -76,6 +76,7 @@ public class PessoaDAO
             while(rs.next())
             {
                 Pessoa p = new Pessoa();
+                
                 p.setIdPessoa(rs.getInt("idPessoa"));
                 p.setNomePessoa(rs.getString("nomePessoa"));
                 p.setCpf(rs.getString("cpf"));
