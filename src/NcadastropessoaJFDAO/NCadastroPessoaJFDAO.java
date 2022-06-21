@@ -20,7 +20,8 @@ import javax.swing.JPanel;
  *
  * @author jairb
  */
-public class NCadastroPessoaJFDAO implements ActionListener {
+public class NCadastroPessoaJFDAO implements ActionListener
+{
 
     public static CPessoa cadPessoas = new CPessoa();
     public static CCarro cadCarros = new CCarro();
@@ -31,7 +32,8 @@ public class NCadastroPessoaJFDAO implements ActionListener {
     JButton btnCadPessoa = new JButton("Cad. Pessoas");
     JButton btnCadCarros = new JButton("Cad. Carros");
 
-    private NCadastroPessoaJFDAO() {
+    private NCadastroPessoaJFDAO()
+    {
         janela.setSize(350, 100);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         painel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
@@ -46,20 +48,24 @@ public class NCadastroPessoaJFDAO implements ActionListener {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         cadPessoas.mokPessoas();
         cadCarros.mokCarro();
         new NCadastroPessoaJFDAO();
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnCadPessoa) {
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getSource() == btnCadPessoa)
+        {
             pessoaCadastro pcad = new pessoaCadastro();
             pcad.setVisible(true);
             pcad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
-        if (e.getSource() == btnCadCarros) {
+        if (e.getSource() == btnCadCarros)
+        {
             carroCadastro cCad = new carroCadastro();
             cCad.setVisible(true);
             cCad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

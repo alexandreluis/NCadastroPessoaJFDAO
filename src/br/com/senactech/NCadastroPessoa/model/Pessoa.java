@@ -113,7 +113,4 @@ public class Pessoa {
     public String toString() {
         return "Pessoa{" + "idPessoa=" + idPessoa + ", nomePessoa=" + nomePessoa + ", cpf=" + cpf + ", endereco=" + endereco + ", telefone=" + telefone + ", idade=" + idade + ", status=" + status + '}';
     }
-    
-
-    
 }
