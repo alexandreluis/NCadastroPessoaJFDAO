@@ -26,82 +26,73 @@ import java.util.logging.Logger;
  *
  * @author jairb
  */
-public class pessoaCadastro extends javax.swing.JFrame
-{
+public class pessoaCadastro extends javax.swing.JFrame {
 
     JButton btnClick = null;
 
     /**
      * Creates new form pessoaCadastro
      */
-    public pessoaCadastro()
-    {
+    public pessoaCadastro() throws SQLException {
         initComponents();
         this.setLocationRelativeTo(null);
 //        cadPessoas.mokPessoas();
-        addRowToTable();
+        addRowToTableBD();
     }
 
-    public void addRowToTable()
-    {
+    public void addRowToTableBD() throws SQLException {
         //Cria obj model e recebe a modelagem da tabela JtPessoa do JFrame
         DefaultTableModel model = (DefaultTableModel) jtPessoas.getModel();
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
         Object rowData[] = new Object[4]; //cria vetor para as colunas da tabela
-        for (Pessoa p : cadPessoas.getAll())
-        {
+
+        PessoaServicos pessoas = ServicosFactory.getPessoaServicos();
+
+        for (Pessoa p : pessoas.getPessoas()) {
             rowData[0] = p.getNomePessoa();
             rowData[1] = p.getCpf();
             rowData[2] = p.getTelefone();
-            if (p.isStatus())
-            {
+            if (p.isStatus()) {
                 rowData[3] = "Ativo";
-            } else
-            {
+            } else {
                 rowData[3] = "Inativo";
             }
             model.addRow(rowData);
         }
     }
 
-    public void jTableFilterClear()
-    {
+    public void jTableFilterClear() {
         DefaultTableModel model = (DefaultTableModel) jtPessoas.getModel();
         final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
         jtPessoas.setRowSorter(sorter);
         sorter.setRowFilter(null);
     }
 
-    public Boolean validaInputs()
-    {
+    public Boolean validaInputs() {
         String telefone = jtfTelefone.getText();
         if (jtfNome.getText().isBlank()
                 || jtfCPF.getText().isBlank()
                 || jtfEndereco.getText().isBlank()
                 || jtfIdade.getText().isBlank()
                 || jtfTelefone.getText().isBlank()
-                || bgStatus.getSelection() == null)
-        {
+                || bgStatus.getSelection() == null) {
             JOptionPane.showMessageDialog(this,
                     "Todos os campos devem ser preenchidos!",
                     ".: Erro :.", JOptionPane.ERROR_MESSAGE);
             jtfNome.requestFocus();
             return false;
         }
-        if (telefone.length() != 10 && telefone.length() != 11)
-        {
+        if (telefone.length() != 10 && telefone.length() != 11) {
             JOptionPane.showMessageDialog(this,
                     "Telefone informado esta incorreto",
                     ".: Erro :.", JOptionPane.ERROR_MESSAGE);
             jtfTelefone.requestFocus();
             return false;
         }
-        if (!jtfIdade.getText().isBlank())
-        {
+        if (!jtfIdade.getText().isBlank()) {
             int idade = Integer.parseInt(jtfIdade.getText());
-            if (idade == 0 || idade > 120)
-            {
+            if (idade == 0 || idade > 120) {
                 JOptionPane.showMessageDialog(this,
                         "Idade informada esta incorreta!",
                         ".: Erro :.", JOptionPane.ERROR_MESSAGE);
@@ -109,22 +100,28 @@ public class pessoaCadastro extends javax.swing.JFrame
                 return false;
             }
         }
-        if (btnClick.getText() == "Salvar")
-        {
-            if (!ValidaCPF.isCPF(jtfCPF.getText()))
-            {
-                JOptionPane.showMessageDialog(this,
-                        "CPF informado esta incorreto!!!",
-                        ".: Erro :.", JOptionPane.ERROR_MESSAGE);
-                jtfCPF.requestFocus();
-                return false;
-            } else if (cadPessoas.verCPF(jtfCPF.getText()))
-            {
+        if (btnClick.getText() == "Salvar") {
+            try {
+                PessoaServicos pessoas = ServicosFactory.getPessoaServicos();
+
+                if (!ValidaCPF.isCPF(jtfCPF.getText())) {
+                    JOptionPane.showMessageDialog(this,
+                            "CPF informado esta incorreto!!!",
+                            ".: Erro :.", JOptionPane.ERROR_MESSAGE);
+                    jtfCPF.requestFocus();
+                    return false;
+                } else if (pessoas.verCPFDB(jtfCPF.getText())) {
+                    JOptionPane.showMessageDialog(this,
+                            "CPF já cadastrado!!!",
+                            ".: Erro :.", JOptionPane.ERROR_MESSAGE);
+                    jtfCPF.requestFocus();
+                    return false;
+                }
+            } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this,
                         "CPF já cadastrado!!!",
                         ".: Erro :.", JOptionPane.ERROR_MESSAGE);
-                jtfCPF.requestFocus();
-                return false;
+                Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return true;
@@ -338,15 +335,16 @@ public class pessoaCadastro extends javax.swing.JFrame
                                 .addGap(12, 12, 12)
                                 .addComponent(jtfIdade, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jrbAtivo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jrbInativo)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jtfCPF, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jbPesqCPF)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jrbAtivo)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jrbInativo))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jtfCPF, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jbPesqCPF)))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(63, 63, 63)
@@ -356,7 +354,7 @@ public class pessoaCadastro extends javax.swing.JFrame
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jbSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
+                                .addComponent(jbSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jbLimpar))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -423,7 +421,7 @@ public class pessoaCadastro extends javax.swing.JFrame
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, Short.MAX_VALUE)
         );
 
         pack();
@@ -452,8 +450,7 @@ public class pessoaCadastro extends javax.swing.JFrame
     private void jtfCPFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCPFKeyTyped
         // TODO add your handling code here:
         String caracteres = "0987654321";
-        if (!caracteres.contains(evt.getKeyChar() + ""))
-        {
+        if (!caracteres.contains(evt.getKeyChar() + "")) {
             evt.consume();
         }
     }//GEN-LAST:event_jtfCPFKeyTyped
@@ -461,8 +458,7 @@ public class pessoaCadastro extends javax.swing.JFrame
     private void jtfIdadeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfIdadeKeyTyped
         // TODO add your handling code here:
         String caracteres = "0987654321";
-        if (!caracteres.contains(evt.getKeyChar() + ""))
-        {
+        if (!caracteres.contains(evt.getKeyChar() + "")) {
             evt.consume();
         }
     }//GEN-LAST:event_jtfIdadeKeyTyped
@@ -475,8 +471,7 @@ public class pessoaCadastro extends javax.swing.JFrame
     private void jtfNomeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfNomeKeyTyped
         // TODO add your handling code here:
         String caracteres = "0987654321/[]{}=+-_)(*&¨%$#@!<>;:?";
-        if (caracteres.contains(evt.getKeyChar() + ""))
-        {
+        if (caracteres.contains(evt.getKeyChar() + "")) {
             evt.consume();
         }
     }//GEN-LAST:event_jtfNomeKeyTyped
@@ -489,8 +484,7 @@ public class pessoaCadastro extends javax.swing.JFrame
     private void jtfTelefoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfTelefoneKeyTyped
         // TODO add your handling code here:
         String caracteres = "0987654321";
-        if (!caracteres.contains(evt.getKeyChar() + ""))
-        {
+        if (!caracteres.contains(evt.getKeyChar() + "")) {
             evt.consume();
         }
     }//GEN-LAST:event_jtfTelefoneKeyTyped
@@ -499,10 +493,8 @@ public class pessoaCadastro extends javax.swing.JFrame
         // TODO add your handling code here:
         btnClick = (JButton) evt.getSource();
 
-        if (validaInputs())
-        {
-            try
-            {
+        if (validaInputs()) {
+            try {
                 int id = cadPessoas.gerarId();
                 String nomePessoa = jtfNome.getText();
                 String cpf = jtfCPF.getText();
@@ -512,7 +504,6 @@ public class pessoaCadastro extends javax.swing.JFrame
                 boolean status = jrbAtivo.isSelected();
 
                 Pessoa p = new Pessoa(id, nomePessoa, cpf, endereco, telefone, idade, status);
-                //cadPessoas.add(p);
 
                 PessoaServicos pessoas = ServicosFactory.getPessoaServicos();
                 pessoas.cadPessoa(p);
@@ -520,10 +511,10 @@ public class pessoaCadastro extends javax.swing.JFrame
                 JOptionPane.showMessageDialog(this, "Pessoa foi salva com sucesso!");
 
                 jbLimpar.doClick();
-                addRowToTable();
-            } catch (SQLException ex)
-            {
-                JOptionPane.showMessageDialog(rootPane, "Erro ao cadastrar.\n" + ex.getMessage(), "Erro ", JOptionPane.ERROR_MESSAGE);
+                addRowToTableBD();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(rootPane, "Erro ao cadastrar.\n" + ex.getMessage(), 
+                        "Erro ", JOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -542,103 +533,129 @@ public class pessoaCadastro extends javax.swing.JFrame
 
     private void jbDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbDeletarActionPerformed
         // TODO add your handling code here:
+        PessoaServicos pessoas = ServicosFactory.getPessoaServicos();
+
         jbEditar.setEnabled(false);
         int linha;
         String cpf;
         linha = jtPessoas.getSelectedRow();
         cpf = (String) jtPessoas.getValueAt(linha, 1);
-        Pessoa p = cadPessoas.getByDoc(cpf);
+        Pessoa p;
+        try {
+            p = pessoas.buscarPessoa(cpf);
+
 //        int resposta = JOptionPane.showConfirmDialog(this,
 //                "Deseja realmente deletar " + p.getNomePessoa() + "?",
 //                ".: Deletar :.", JOptionPane.YES_NO_OPTION,
 //                JOptionPane.QUESTION_MESSAGE);
-        Object[] resp =
-        {
-            "Sim", "Não"
-        };
-        int resposta = JOptionPane.showOptionDialog(this,
-                "Deseja realmente deletar " + p.getNomePessoa() + "?",
-                ".: Deletar :.", JOptionPane.DEFAULT_OPTION,
-                JOptionPane.WARNING_MESSAGE, null, resp, resp[0]);
-        if (resposta == 0)
-        {
-            cadPessoas.deletar(p);
-            addRowToTable();
-            JOptionPane.showMessageDialog(this, "Pessoa deletada com sucesso!",
-                    ".: Deletar :.", JOptionPane.INFORMATION_MESSAGE);
-        } else
-        {
-            JOptionPane.showMessageDialog(this, "Entendemos sua decisão!",
-                    ".: Deletar :.", JOptionPane.INFORMATION_MESSAGE);
+            Object[] resp = {"Sim", "Não"};
+
+            int resposta = JOptionPane.showOptionDialog(this,
+                    "Deseja realmente deletar " + p.getNomePessoa() + "?",
+                    ".: Deletar :.", JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.WARNING_MESSAGE, null, resp, resp[0]);
+            if (resposta == 0) {
+                pessoas.deletarPessoaBD(p.getIdPessoa());
+                try {
+                    addRowToTableBD();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao deletar pessoa! \n" + ex.getMessage(),
+                            ".: Deletar :.", JOptionPane.INFORMATION_MESSAGE);
+
+                    Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                JOptionPane.showMessageDialog(this, "Pessoa deletada com sucesso!",
+                        ".: Deletar :.", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Entendemos sua decisão!",
+                        ".: Deletar :.", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
         }
         jbDeletar.setEnabled(false);
     }//GEN-LAST:event_jbDeletarActionPerformed
 
     private void jbEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEditarActionPerformed
-        // TODO add your handling code here:
-        //ajustando comportamento dos botões
-        jbDeletar.setEnabled(false);
-        jbSalvar.setEnabled(false);
-        jbEditar.setEnabled(false);
-        jtfCPF.setEnabled(false);
-        jbPesqCPF.setEnabled(false);
-        jbConfirmar.setEnabled(true);
-        jbLimpar.setText("Cancelar");
-
-        //carregar os dados da pessoa selecionada nos JTextFields
-        int linha;
-        String cpf;
-        linha = jtPessoas.getSelectedRow();
-        cpf = (String) jtPessoas.getValueAt(linha, 1);
-        Pessoa p = cadPessoas.getByDoc(cpf);
-
-        jtfNome.setText(p.getNomePessoa());
-        jtfCPF.setText(p.getCpf());
-        jtfEndereco.setText(p.getEndereco());
-        jtfTelefone.setText(p.getTelefone());
-        jtfIdade.setText(Integer.toString(p.getIdade()));
-        if (p.isStatus())
-        {
-            jrbAtivo.setSelected(true);
-            jrbInativo.setSelected(false);
-        } else
-        {
-            jrbAtivo.setSelected(false);
-            jrbInativo.setSelected(true);
+        try {
+            // TODO add your handling code here:
+            //ajustando comportamento dos botões
+            jbDeletar.setEnabled(false);
+            jbSalvar.setEnabled(false);
+            jbEditar.setEnabled(false);
+            jtfCPF.setEnabled(false);
+            jbPesqCPF.setEnabled(false);
+            jbConfirmar.setEnabled(true);
+            jbLimpar.setText("Cancelar");
+            
+            //carregar os dados da pessoa selecionada nos JTextFields
+            PessoaServicos pessoas = ServicosFactory.getPessoaServicos();
+            
+            int linha;
+            String cpf;
+            linha = jtPessoas.getSelectedRow();
+            cpf = (String) jtPessoas.getValueAt(linha, 1);
+            Pessoa p = pessoas.buscarPessoa(cpf);
+            
+            jtfNome.setText(p.getNomePessoa());
+            jtfCPF.setText(p.getCpf());
+            jtfEndereco.setText(p.getEndereco());
+            jtfTelefone.setText(p.getTelefone());
+            jtfIdade.setText(Integer.toString(p.getIdade()));
+            if (p.isStatus()) {
+                jrbAtivo.setSelected(true);
+                jrbInativo.setSelected(false);
+            } else {
+                jrbAtivo.setSelected(false);
+                jrbInativo.setSelected(true);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jbEditarActionPerformed
 
     private void jbConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbConfirmarActionPerformed
         // TODO add your handling code here:
         btnClick = (JButton) evt.getSource();
-        if (validaInputs())
-        {
-            Pessoa p = cadPessoas.getByDoc(jtfCPF.getText());
-
-            p.setNomePessoa(jtfNome.getText());
-            p.setCpf(jtfCPF.getText());
-            p.setEndereco(jtfEndereco.getText());
-            p.setIdade(Integer.parseInt(jtfIdade.getText()));
-            p.setTelefone(jtfTelefone.getText());
-            if (jrbAtivo.isSelected())
-            {
-                p.setStatus(true);
-            } else
-            {
-                p.setStatus(false);
+        if (validaInputs()) {
+            try {
+                PessoaServicos pessoas = ServicosFactory.getPessoaServicos();
+                Pessoa p = pessoas.buscarPessoa(jtfCPF.getText());
+                
+                p.setNomePessoa(jtfNome.getText());
+                p.setCpf(jtfCPF.getText());
+                p.setEndereco(jtfEndereco.getText());
+                p.setIdade(Integer.parseInt(jtfIdade.getText()));
+                p.setTelefone(jtfTelefone.getText());
+                
+                if (jrbAtivo.isSelected()) {
+                    p.setStatus(true);
+                } else {
+                    p.setStatus(false);
+                }
+                
+                try {
+                    //atualiza pessoa no BD
+                    pessoas.atualizarPessoaBD(p);
+                    addRowToTableBD();
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao atualizar pessoa! \n" + ex.getMessage(),
+                            ".: Deletar :.", JOptionPane.INFORMATION_MESSAGE);
+                    Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                jbLimpar.doClick();
+                jbLimpar.setText("Limpar");
+                
+                jTableFilterClear();
+                
+                String msg = "Dados atualizados com sucesso!";
+                JOptionPane.showMessageDialog(this, msg, ".: Atualizar :.",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException ex) {
+                Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
             }
-            addRowToTable();
-
-            jbLimpar.doClick();
-            jbLimpar.setText("Limpar");
-
-            jTableFilterClear();
-
-            String msg = "Dados atualizados com sucesso!";
-            JOptionPane.showMessageDialog(this, msg, ".: Atualizar :.",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } else
-        {
+        } else {
             jbLimpar.doClick();
             jtfCPF.setEnabled(true);
         }
@@ -646,97 +663,73 @@ public class pessoaCadastro extends javax.swing.JFrame
 
     private void jbPesqCPFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPesqCPFActionPerformed
         // TODO add your handling code here:
-        if (!ValidaCPF.isCPF(jtfCPF.getText()))
-        {
+        PessoaServicos pessoas = ServicosFactory.getPessoaServicos();
+
+        if (!ValidaCPF.isCPF(jtfCPF.getText())) {
             JOptionPane.showMessageDialog(this,
                     "CPF informado esta incorreto!!!",
                     ".: Erro :.", JOptionPane.ERROR_MESSAGE);
             jtfCPF.requestFocus();
-        } else if (cadPessoas.verCPF(jtfCPF.getText()))
-        {
-            DefaultTableModel model = (DefaultTableModel) jtPessoas.getModel();
-            final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
-            jtPessoas.setRowSorter(sorter);
-            String text = jtfCPF.getText();
-            if (text.length() == 0)
-            {
-                sorter.setRowFilter(null);
-            } else
-            {
-                try
-                {
-                    sorter.setRowFilter(RowFilter.regexFilter(text));
-                } catch (PatternSyntaxException pse)
-                {
-                    JOptionPane.showMessageDialog(this, "Registro não encontrado!");
+        } else try {
+            if (!pessoas.verCPFDB(jtfCPF.getText())) {
+                DefaultTableModel model = (DefaultTableModel) jtPessoas.getModel();
+                final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+                jtPessoas.setRowSorter(sorter);
+                String text = jtfCPF.getText();
+                if (text.length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    try {
+                        sorter.setRowFilter(RowFilter.regexFilter(text));
+                    } catch (PatternSyntaxException pse) {
+                        JOptionPane.showMessageDialog(this, "Registro não encontrado!");
+                    }
                 }
             }
-
-//            Pessoa p = cadPessoas.getByDoc(jtfCPF.getText());
-//
-//            jtfNome.setText(p.getNomePessoa());
-//            jtfCPF.setText(p.getCpf());
-//            jtfEndereco.setText(p.getEndereco());
-//            jtfTelefone.setText(p.getTelefone());
-//            jtfIdade.setText(Integer.toString(p.getIdade()));
-//            if (p.isStatus()) {
-//                jrbAtivo.setSelected(true);
-//                jrbInativo.setSelected(false);
-//            } else {
-//                jrbAtivo.setSelected(false);
-//                jrbInativo.setSelected(true);
-//            }
-//
-//            jbConfirmar.setEnabled(true);
-//            jbSalvar.setEnabled(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jbPesqCPFActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try
-        {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
-            {
-                if ("Nimbus".equals(info.getName()))
-                {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex)
-        {
+        } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(pessoaCadastro.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex)
-        {
+        } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(pessoaCadastro.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex)
-        {
+        } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(pessoaCadastro.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex)
-        {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(pessoaCadastro.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable()
-        {
-            public void run()
-            {
-                new pessoaCadastro().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    new pessoaCadastro().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(pessoaCadastro.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

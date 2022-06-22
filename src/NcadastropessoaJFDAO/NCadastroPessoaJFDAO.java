@@ -12,6 +12,9 @@ import br.com.senactech.NCadastroPessoa.view.pessoaCadastro;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -60,9 +63,13 @@ public class NCadastroPessoaJFDAO implements ActionListener
     {
         if (e.getSource() == btnCadPessoa)
         {
-            pessoaCadastro pcad = new pessoaCadastro();
-            pcad.setVisible(true);
-            pcad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            try {
+                pessoaCadastro pcad = new pessoaCadastro();
+                pcad.setVisible(true);
+                pcad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            } catch (SQLException ex) {
+                Logger.getLogger(NCadastroPessoaJFDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (e.getSource() == btnCadCarros)
         {
