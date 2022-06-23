@@ -123,7 +123,8 @@ public class PessoaDAO
             }
         } catch (Exception e)
         {
-            throw new SQLException("Pessoa com este cpf não existe.\n" + e.getMessage());
+            throw new SQLException("Pessoa com este cpf não existe.\n" + 
+                    e.getMessage());
         } finally
         {
             conn.close();
@@ -159,7 +160,8 @@ public class PessoaDAO
             }
         } catch (Exception e)
         {
-            throw new SQLException("Pessoa com este cpf não existe.\n" + e.getMessage());
+            throw new SQLException("Pessoa com este cpf não existe.\n" +
+                     e.getMessage());
         } finally
         {
             conn.close();
@@ -181,7 +183,8 @@ public class PessoaDAO
             statement.execute(sql);
         } catch (Exception e)
         {
-            throw new SQLException("Erro ao deletar Pessoa.\n" + e.getMessage());
+            throw new SQLException("Erro ao deletar Pessoa.\n" + 
+                    e.getMessage());
         } finally
         {
             conn.close();

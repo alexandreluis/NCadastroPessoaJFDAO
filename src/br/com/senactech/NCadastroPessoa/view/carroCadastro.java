@@ -13,6 +13,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import static NcadastropessoaJFDAO.NCadastroPessoaJFDAO.cadCarros;
 import static NcadastropessoaJFDAO.NCadastroPessoaJFDAO.cadPessoas;
+import br.com.senactech.NCadastroPessoa.services.CarroServicos;
+import br.com.senactech.NCadastroPessoa.services.ServicosFactory;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -471,24 +476,33 @@ public class carroCadastro extends javax.swing.JFrame {
     private void jbSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSalvarActionPerformed
         // TODO add your handling code here:
         if (validaInputs()){
-            int id = cadCarros.gerarId();
-            int idPessoa = cadPessoas.pesqIdPes(jtfCPFProp.getText());
-            String placa = jtfPlaca.getText();
-            String marca = jcbMarca.getSelectedItem().toString();
-            String modelo = jtfModelo.getText();
-            int anoF = Integer.parseInt(jtfAnoF.getText());
-            int anoM = Integer.parseInt(jtfAnoM.getText());
-            String cor = jtfCor.getText();
-            int portas = Integer.parseInt(jtfPortas.getText());
-            
-            Carro c = new Carro(id, placa, marca, modelo, anoF, anoM, cor, 
-                    portas, idPessoa);
-            cadCarros.add(c);
-            
-            addRowToTable();
-            
-            JOptionPane.showMessageDialog(this, "Carro foi salvo com sucesso!");
-            jbLimpar.doClick();
+            try {
+                int id = cadCarros.gerarId();
+                int idPessoa = cadPessoas.pesqIdPes(jtfCPFProp.getText());
+                String placa = jtfPlaca.getText();
+                String marca = jcbMarca.getSelectedItem().toString();
+                String modelo = jtfModelo.getText();
+                int anoF = Integer.parseInt(jtfAnoF.getText());
+                int anoM = Integer.parseInt(jtfAnoM.getText());
+                String cor = jtfCor.getText();
+                int portas = Integer.parseInt(jtfPortas.getText());
+                
+                Carro c = new Carro(id, placa, marca, modelo, anoF, anoM, cor,
+                        portas, idPessoa);
+                
+//cadCarros.add(c);
+                CarroServicos carroServicos = ServicosFactory.getCarroServicos();
+                carroServicos.cadCarro(c);
+                
+                addRowToTable();
+                
+                JOptionPane.showMessageDialog(this, "Carro foi salvo com sucesso!");
+                jbLimpar.doClick();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(rootPane, "Erro ao cadastrar.\n" + ex.getMessage(), 
+                        "Erro ", JOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(carroCadastro.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jbSalvarActionPerformed
 

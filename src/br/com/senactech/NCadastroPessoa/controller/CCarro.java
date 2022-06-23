@@ -20,7 +20,6 @@ public class CCarro implements InterfaceController<Carro>{
     public int gerarId(){
         return this.idCarro++;
     }
-
     
     @Override
     public ArrayList<Carro> getAll() {
