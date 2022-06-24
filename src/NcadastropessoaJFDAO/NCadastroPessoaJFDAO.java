@@ -25,7 +25,6 @@ import javax.swing.JPanel;
  */
 public class NCadastroPessoaJFDAO implements ActionListener
 {
-
     public static CPessoa cadPessoas = new CPessoa();
     public static CCarro cadCarros = new CCarro();
 
@@ -44,6 +43,7 @@ public class NCadastroPessoaJFDAO implements ActionListener
         painel.add(btnCadCarros);
         janela.add(painel);
         janela.setVisible(true);
+        
         btnCadPessoa.addActionListener(this);
         btnCadCarros.addActionListener(this);
     }
@@ -71,11 +71,16 @@ public class NCadastroPessoaJFDAO implements ActionListener
                 Logger.getLogger(NCadastroPessoaJFDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
         if (e.getSource() == btnCadCarros)
         {
-            carroCadastro cCad = new carroCadastro();
-            cCad.setVisible(true);
-            cCad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            try {
+                carroCadastro cCad = new carroCadastro();
+                cCad.setVisible(true);
+                cCad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            } catch (SQLException ex) {
+                Logger.getLogger(NCadastroPessoaJFDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

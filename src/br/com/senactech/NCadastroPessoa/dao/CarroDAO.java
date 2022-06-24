@@ -23,20 +23,21 @@ public class CarroDAO
         try
         {
             String sql;
+
+            sql = "INSERT INTO carro VALUES (null, '" 
+                    + pVO.getPlaca() + "', '"
+                    + pVO.getMarca() + "', '"
+                    + pVO.getModelo() + "', "
+                    + pVO.getAnoFabricacao() + ", "
+                    + pVO.getAnoModelo() + ", '"
+                    + pVO.getCor() + "', "
+                    + pVO.getnPortas() + ", "
+                    + pVO.getIdPessoa() + ");";
             
-            sql = "INSERT INTO carro VALUES (null, '"
-                    + pVO.getCor() + "', '"
-                    + pVO.getMarca()+ "', '"
-                    + pVO.getModelo()+ "', '"
-                    + pVO.getPlaca()+ "', '"
-                    + pVO.getAnoFabricacao()+ "', '"
-                    + pVO.getAnoModelo() + "', '"
-                    + pVO.getIdCarro()+ "', '"
-                    + pVO.getIdPessoa()+ "', "
-                    + pVO.getnPortas()+ ");";
+            statement.execute(sql);
         } catch (Exception e)
         {
-            throw new SQLException("Erro ao inserir carro.\n" 
+            throw new SQLException("Erro ao inserir carro. CPF não cadastrado. \n" 
                     + e.getMessage());
         } finally
         {

@@ -542,7 +542,7 @@ public class pessoaCadastro extends javax.swing.JFrame {
         cpf = (String) jtPessoas.getValueAt(linha, 1);
         Pessoa p;
         try {
-            p = pessoas.buscarPessoa(cpf);
+            p = pessoas.getPessoaByDoc(cpf);
 
 //        int resposta = JOptionPane.showConfirmDialog(this,
 //                "Deseja realmente deletar " + p.getNomePessoa() + "?",
@@ -595,7 +595,7 @@ public class pessoaCadastro extends javax.swing.JFrame {
             String cpf;
             linha = jtPessoas.getSelectedRow();
             cpf = (String) jtPessoas.getValueAt(linha, 1);
-            Pessoa p = pessoas.buscarPessoa(cpf);
+            Pessoa p = pessoas.getPessoaByDoc(cpf);
             
             jtfNome.setText(p.getNomePessoa());
             jtfCPF.setText(p.getCpf());
@@ -620,7 +620,7 @@ public class pessoaCadastro extends javax.swing.JFrame {
         if (validaInputs()) {
             try {
                 PessoaServicos pessoas = ServicosFactory.getPessoaServicos();
-                Pessoa p = pessoas.buscarPessoa(jtfCPF.getText());
+                Pessoa p = pessoas.getPessoaByDoc(jtfCPF.getText());
                 
                 p.setNomePessoa(jtfNome.getText());
                 p.setCpf(jtfCPF.getText());

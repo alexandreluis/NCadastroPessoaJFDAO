@@ -30,10 +30,16 @@ public class PessoaServicos
         return pDAO.verCPF(cpf);
     }
     
-    public Pessoa buscarPessoa(String cpf) throws SQLException
+    public Pessoa getPessoaByDoc(String cpf) throws SQLException
     {
         PessoaDAO pDAO = DAOFactory.getPessoaDAO();
         return pDAO.getByDoc(cpf);
+    }
+    
+    public Pessoa getPessoaById(int idPessoa) throws SQLException
+    {
+        PessoaDAO pDAO = DAOFactory.getPessoaDAO();
+        return pDAO.getById(idPessoa);
     }
     
     public void deletarPessoaBD(int id) throws SQLException

@@ -27,15 +27,11 @@ public class PessoaDAO
     //
     public void cadastrarPessoa(Pessoa pVO) throws SQLException
     {
-        //abre/buscar conexao do db
         Connection conn = Conexao.getConexao();
-
-        //abre conexao
         Statement statement = conn.createStatement();
 
         try
         {
-            //
             String sql;
 
             sql = "INSERT INTO pessoa VALUES (null, '"
@@ -67,7 +63,6 @@ public class PessoaDAO
 
         try
         {
-            //
             String sql;
             sql = "SELECT * FROM pessoa";
 
@@ -93,7 +88,6 @@ public class PessoaDAO
             return pessoas;
         } catch (SQLException e)
         {
-            //
             throw new SQLException("Erro ao buscar pessoas.\n"
                     + e.getMessage());
         } finally
@@ -105,7 +99,6 @@ public class PessoaDAO
 
     public boolean verCPF(String cpf) throws SQLException
     {
-        //
         Connection conn = Conexao.getConexao();
         Statement statement = conn.createStatement();
 
@@ -123,8 +116,8 @@ public class PessoaDAO
             }
         } catch (Exception e)
         {
-            throw new SQLException("Pessoa com este cpf não existe.\n" + 
-                    e.getMessage());
+            throw new SQLException("Pessoa com este cpf não existe.\n"
+                    + e.getMessage());
         } finally
         {
             conn.close();
@@ -138,18 +131,17 @@ public class PessoaDAO
     {
         Connection conn = Conexao.getConexao();
         Statement statement = conn.createStatement();
-        
+
         Pessoa p = new Pessoa();
-        
+
         try
         {
             String sql;
             sql = "SELECT * FROM pessoa WHERE cpf = " + cpf;
             ResultSet rs = statement.executeQuery(sql);
-            
-            while(rs.next())
+
+            while (rs.next())
             {
-                //lado do java |x| lado do banco
                 p.setIdPessoa(rs.getInt("idPessoa"));
                 p.setNomePessoa(rs.getString("nomePessoa"));
                 p.setCpf(rs.getString("cpf"));
@@ -160,22 +152,66 @@ public class PessoaDAO
             }
         } catch (Exception e)
         {
-            throw new SQLException("Pessoa com este cpf não existe.\n" +
-                     e.getMessage());
+            throw new SQLException("Pessoa com este cpf não existe.\n"
+                    + e.getMessage());
         } finally
         {
             conn.close();
             statement.close();
         }
-        
+
         return p;
     }
-    
+
+    public Pessoa getById(int idDaPessoa) throws SQLException
+    {
+        Connection conn = Conexao.getConexao();
+        Statement statement = conn.createStatement();
+
+        if (conn.isClosed())
+        {
+            System.out.println("Conexão fechada.");
+        }
+        
+        Pessoa p = new Pessoa();
+        
+        try
+        {
+            String sql;
+            sql = "SELECT * FROM pessoa WHERE idPessoa = " + idDaPessoa + ";";
+
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs.next())
+            {
+                p.setIdPessoa(rs.getInt("idPessoa"));
+                p.setNomePessoa(rs.getString("nomePessoa"));
+                p.setCpf(rs.getString("cpf"));
+                p.setEndereco(rs.getString("endereco"));
+                p.setTelefone(rs.getString("telefone"));
+                p.setIdade(rs.getInt("idade"));
+                p.setStatus(rs.getBoolean("status"));
+            } else
+            {
+                System.out.println("não houve resultados");
+            }
+        } catch (Exception e)
+        {
+            throw new SQLException("Pessoa com este cpf não existe.\n"
+                    + e.getMessage());
+        } finally
+        {
+            conn.close();
+            statement.close();
+        }
+
+        return p;
+    }
+
     public void deletarPessoa(int id) throws SQLException
     {
         Connection conn = Conexao.getConexao();
         Statement statement = conn.createStatement();
-        
+
         try
         {
             String sql;
@@ -183,24 +219,24 @@ public class PessoaDAO
             statement.execute(sql);
         } catch (Exception e)
         {
-            throw new SQLException("Erro ao deletar Pessoa.\n" + 
-                    e.getMessage());
+            throw new SQLException("Erro ao deletar Pessoa.\n"
+                    + e.getMessage());
         } finally
         {
             conn.close();
             statement.close();
         }
     }
-    
+
     public void atualizarPessoa(Pessoa pVO) throws SQLException
     {
         Connection conn = Conexao.getConexao();
         Statement statement = conn.createStatement();
-        
+
         try
         {
             String sql;
-            
+
             sql = "UPDATE pessoa SET "
                     + "nomePessoa = '" + pVO.getNomePessoa() + "', "
                     + "endereco = '" + pVO.getEndereco() + "', "
@@ -208,7 +244,7 @@ public class PessoaDAO
                     + "telefone = '" + pVO.getTelefone() + "', "
                     + "status = " + pVO.isStatus() + " "
                     + "WHERE idPessoa = " + pVO.getIdPessoa();
-            
+
             statement.executeUpdate(sql);
         } catch (Exception e)
         {

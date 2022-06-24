@@ -13,7 +13,9 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import static NcadastropessoaJFDAO.NCadastroPessoaJFDAO.cadCarros;
 import static NcadastropessoaJFDAO.NCadastroPessoaJFDAO.cadPessoas;
+import br.com.senactech.NCadastroPessoa.model.Pessoa;
 import br.com.senactech.NCadastroPessoa.services.CarroServicos;
+import br.com.senactech.NCadastroPessoa.services.PessoaServicos;
 import br.com.senactech.NCadastroPessoa.services.ServicosFactory;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -28,24 +30,29 @@ public class carroCadastro extends javax.swing.JFrame {
     /**
      * Creates new form carroCadastro
      */
-    public carroCadastro() {
+    public carroCadastro() throws SQLException
+    {
         initComponents();
-//        cadPessoas.mokPessoas();
-//        cadCarros.mokCarro();
         addRowToTable();
     }
     
-    public void addRowToTable() {
+    public void addRowToTable() throws SQLException 
+    {
         //Cria obj model e recebe a modelagem da tabela JtPessoa do JFrame
         DefaultTableModel model = (DefaultTableModel) jtCarros.getModel();
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
         Object rowData[] = new Object[4]; //cria vetor para as colunas da tabela
-        for (Carro c : cadCarros.getAll()) {
+        
+        CarroServicos carroServicos = ServicosFactory.getCarroServicos();
+        PessoaServicos pessoaServicos = ServicosFactory.getPessoaServicos();
+
+        for (Carro c : carroServicos.getTodosCarros()) {
             rowData[0] = c.getPlaca();
             rowData[1] = c.getMarca();
             rowData[2] = c.getModelo();
-            rowData[3] = cadPessoas.getNomePes(c.getIdPessoa());
+            Pessoa p = pessoaServicos.getPessoaById(c.getIdPessoa());
+            rowData[3] = p.getNomePessoa();
             
             model.addRow(rowData);
         }
@@ -58,7 +65,8 @@ public class carroCadastro extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -103,30 +111,39 @@ public class carroCadastro extends javax.swing.JFrame {
         jSeparator2.setForeground(new java.awt.Color(255, 204, 51));
 
         jtCarros.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+            new Object [][]
+            {
 
             },
-            new String [] {
+            new String []
+            {
                 "Placa", "Marca", "Modelo", "Proprietário"
             }
-        ) {
-            Class[] types = new Class [] {
+        )
+        {
+            Class[] types = new Class []
+            {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
-            boolean[] canEdit = new boolean [] {
+            boolean[] canEdit = new boolean []
+            {
                 false, false, false, false
             };
 
-            public Class getColumnClass(int columnIndex) {
+            public Class getColumnClass(int columnIndex)
+            {
                 return types [columnIndex];
             }
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
+            public boolean isCellEditable(int rowIndex, int columnIndex)
+            {
                 return canEdit [columnIndex];
             }
         });
-        jtCarros.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+        jtCarros.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
                 jtCarrosMouseClicked(evt);
             }
         });
@@ -135,8 +152,10 @@ public class carroCadastro extends javax.swing.JFrame {
         jLabel1.setText("Placa:");
 
         jtfPlaca.setToolTipText("AAA1234");
-        jtfPlaca.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
+        jtfPlaca.addFocusListener(new java.awt.event.FocusAdapter()
+        {
+            public void focusLost(java.awt.event.FocusEvent evt)
+            {
                 jtfPlacaFocusLost(evt);
             }
         });
@@ -147,16 +166,20 @@ public class carroCadastro extends javax.swing.JFrame {
 
         jLabel5.setText("Ano F.:");
 
-        jtfAnoF.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
+        jtfAnoF.addKeyListener(new java.awt.event.KeyAdapter()
+        {
+            public void keyTyped(java.awt.event.KeyEvent evt)
+            {
                 jtfAnoFKeyTyped(evt);
             }
         });
 
         jLabel6.setText("Ano M.:");
 
-        jtfAnoM.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
+        jtfAnoM.addKeyListener(new java.awt.event.KeyAdapter()
+        {
+            public void keyTyped(java.awt.event.KeyEvent evt)
+            {
                 jtfAnoMKeyTyped(evt);
             }
         });
@@ -165,8 +188,10 @@ public class carroCadastro extends javax.swing.JFrame {
 
         jLabel8.setText("Portas:");
 
-        jtfPortas.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
+        jtfPortas.addKeyListener(new java.awt.event.KeyAdapter()
+        {
+            public void keyTyped(java.awt.event.KeyEvent evt)
+            {
                 jtfPortasKeyTyped(evt);
             }
         });
@@ -174,46 +199,58 @@ public class carroCadastro extends javax.swing.JFrame {
         jLabel9.setText("CPF:");
 
         jbLimpar.setText("Limpar");
-        jbLimpar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jbLimpar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jbLimparActionPerformed(evt);
             }
         });
 
         jbSalvar.setText("Salvar");
-        jbSalvar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jbSalvar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jbSalvarActionPerformed(evt);
             }
         });
 
         jbSair.setText("Sair");
-        jbSair.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jbSair.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jbSairActionPerformed(evt);
             }
         });
 
         jbDeletar.setText("Deletar");
         jbDeletar.setEnabled(false);
-        jbDeletar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jbDeletar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jbDeletarActionPerformed(evt);
             }
         });
 
         jbConfirmar.setText("Confirmar");
         jbConfirmar.setEnabled(false);
-        jbConfirmar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jbConfirmar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jbConfirmarActionPerformed(evt);
             }
         });
 
         jbEditar.setText("Editar");
         jbEditar.setEnabled(false);
-        jbEditar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jbEditar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jbEditarActionPerformed(evt);
             }
         });
@@ -225,9 +262,18 @@ public class carroCadastro extends javax.swing.JFrame {
         jcbMarca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione...", "Mercedes", "GM", "Peugeot", "Jeep", "Fiat", "Mitsubishi", "Lincoln", "Land Rover", "Jaguard" }));
 
         jtfCPFProp.setToolTipText("Informe o CPF");
-        jtfCPFProp.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
+        jtfCPFProp.addFocusListener(new java.awt.event.FocusAdapter()
+        {
+            public void focusLost(java.awt.event.FocusEvent evt)
+            {
                 jtfCPFPropFocusLost(evt);
+            }
+        });
+        jtfCPFProp.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jtfCPFPropActionPerformed(evt);
             }
         });
 
@@ -475,10 +521,16 @@ public class carroCadastro extends javax.swing.JFrame {
 
     private void jbSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSalvarActionPerformed
         // TODO add your handling code here:
+        
+        
         if (validaInputs()){
             try {
                 int id = cadCarros.gerarId();
-                int idPessoa = cadPessoas.pesqIdPes(jtfCPFProp.getText());
+                
+                PessoaServicos pessoaServico = ServicosFactory.getPessoaServicos();
+                Pessoa p = pessoaServico.getPessoaByDoc(jtfCPFProp.getText());
+                
+                int idPessoa = p.getIdPessoa();
                 String placa = jtfPlaca.getText();
                 String marca = jcbMarca.getSelectedItem().toString();
                 String modelo = jtfModelo.getText();
@@ -490,7 +542,6 @@ public class carroCadastro extends javax.swing.JFrame {
                 Carro c = new Carro(id, placa, marca, modelo, anoF, anoM, cor,
                         portas, idPessoa);
                 
-//cadCarros.add(c);
                 CarroServicos carroServicos = ServicosFactory.getCarroServicos();
                 carroServicos.cadCarro(c);
                 
@@ -499,7 +550,7 @@ public class carroCadastro extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Carro foi salvo com sucesso!");
                 jbLimpar.doClick();
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(rootPane, "Erro ao cadastrar.\n" + ex.getMessage(), 
+                JOptionPane.showMessageDialog(rootPane, "Erro ao cadastrar. CPF NÃO EXISTE NA BASE DE DADOS. \n" + ex.getMessage(), 
                         "Erro ", JOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(carroCadastro.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -529,9 +580,13 @@ public class carroCadastro extends javax.swing.JFrame {
                 ".: Deletar :.", JOptionPane.DEFAULT_OPTION,
                 JOptionPane.WARNING_MESSAGE, null, resp, resp[0]);
         if (resposta == 0) {
-            cadCarros.deletar(c);
-            addRowToTable();
-            JOptionPane.showMessageDialog(this, "Carro deletado com sucesso!");
+            try {
+                cadCarros.deletar(c);
+                addRowToTable();
+                JOptionPane.showMessageDialog(this, "Carro deletado com sucesso!");
+            } catch (SQLException ex) {
+                Logger.getLogger(carroCadastro.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Entendemos sua decisão!",
                     ".: Deletar :.", JOptionPane.INFORMATION_MESSAGE);
@@ -568,24 +623,32 @@ public class carroCadastro extends javax.swing.JFrame {
     private void jbConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbConfirmarActionPerformed
         // TODO add your handling code here:
         if (validaInputs()){
-            Carro c = cadCarros.getByDoc(jtfPlaca.getText());
-            
-            c.setAnoFabricacao(Integer.parseInt(jtfAnoF.getText()));
-            c.setAnoModelo(Integer.parseInt(jtfAnoM.getText()));
-            c.setCor(jtfCor.getText());
-            c.setMarca(jcbMarca.getSelectedItem().toString());
-            c.setModelo(jtfModelo.getText());
-            c.setnPortas(Integer.parseInt(jtfPortas.getText()));
-            c.setIdPessoa(cadPessoas.pesqIdPes(jtfCPFProp.getText()));
-            
-            addRowToTable();
-            
-            jbLimpar.doClick();
-            jbLimpar.setText("Limpar");
-            
-            JOptionPane.showMessageDialog(this, "Carro atualizado com sucesso!!!");
+            try {
+                Carro c = cadCarros.getByDoc(jtfPlaca.getText());
+                
+                c.setAnoFabricacao(Integer.parseInt(jtfAnoF.getText()));
+                c.setAnoModelo(Integer.parseInt(jtfAnoM.getText()));
+                c.setCor(jtfCor.getText());
+                c.setMarca(jcbMarca.getSelectedItem().toString());
+                c.setModelo(jtfModelo.getText());
+                c.setnPortas(Integer.parseInt(jtfPortas.getText()));
+                c.setIdPessoa(cadPessoas.pesqIdPes(jtfCPFProp.getText()));
+                
+                addRowToTable();
+                
+                jbLimpar.doClick();
+                jbLimpar.setText("Limpar");
+                
+                JOptionPane.showMessageDialog(this, "Carro atualizado com sucesso!!!");
+            } catch (SQLException ex) {
+                Logger.getLogger(carroCadastro.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jbConfirmarActionPerformed
+
+    private void jtfCPFPropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfCPFPropActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtfCPFPropActionPerformed
 
     /**
      * @param args the command line arguments
@@ -617,7 +680,13 @@ public class carroCadastro extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new carroCadastro().setVisible(true);
+                try
+                {
+                    new carroCadastro().setVisible(true);
+                } catch (SQLException ex)
+                {
+                    Logger.getLogger(carroCadastro.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
