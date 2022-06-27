@@ -29,5 +29,9 @@ create table carro
     nPortas int,
     idPessoa int,
     foreign key (idPessoa) references pessoa(idPessoa));
-
-
+/*
+SELECT * FROM carro LIMIT 100;
+SELECT * FROM carro WHERE placa = "VGT2648";
+SELECT placa FROM carro WHERE placa = 'VGT2648';
+SELECT placa FROM carro WHERE placa = VGT2648;
+*/

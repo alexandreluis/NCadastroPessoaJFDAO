@@ -266,6 +266,7 @@
           </Properties>
           <Events>
             <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="jtfPlacaFocusLost"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jtfPlacaActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
@@ -383,6 +384,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Pesquisar Placa"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbPesqActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JComboBox" name="jcbMarca">
           <Properties>

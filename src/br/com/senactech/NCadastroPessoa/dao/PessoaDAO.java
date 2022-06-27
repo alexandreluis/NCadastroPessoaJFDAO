@@ -108,6 +108,7 @@ public class PessoaDAO
         {
             String sql;
             sql = "SELECT cpf FROM pessoa WHERE cpf = " + cpf;
+
             ResultSet rs = statement.executeQuery(sql);
 
             while (rs.next())
