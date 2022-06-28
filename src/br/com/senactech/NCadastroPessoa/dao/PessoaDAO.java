@@ -2,7 +2,6 @@ package br.com.senactech.NCadastroPessoa.dao;
 
 import br.com.senactech.NCadastroPessoa.conexao.Conexao;
 import br.com.senactech.NCadastroPessoa.model.Pessoa;
-import com.mysql.cj.protocol.Resultset;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -113,7 +112,7 @@ public class PessoaDAO
 
             while (rs.next())
             {
-                verCPF = rs.wasNull();
+                verCPF = !(rs.wasNull());
             }
         } catch (Exception e)
         {
@@ -173,9 +172,9 @@ public class PessoaDAO
         {
             System.out.println("Conexão fechada.");
         }
-        
+
         Pessoa p = new Pessoa();
-        
+
         try
         {
             String sql;

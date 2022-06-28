@@ -18,7 +18,6 @@ public class CarroDAO
     public void cadastrarCarro(Carro pVO) throws SQLException
     {
         Connection conn = Conexao.getConexao();
-
         Statement statement = conn.createStatement();
 
         try
@@ -97,7 +96,7 @@ public class CarroDAO
         Statement statement = conn.createStatement();
 
         boolean existePlaca = false;
-        
+
         try
         {
             String sql;
@@ -136,30 +135,22 @@ public class CarroDAO
         try
         {
             String sql;
-            
-            sql = "SELECT placa FROM carro WHERE placa = '" + placa + "';";
 
-            System.out.println(" sql: " + sql);
+            sql = "SELECT * FROM carro WHERE placa = '" + placa + "';";
+
             ResultSet rs = statement.executeQuery(sql);
 
-            System.out.println("rs.getFetchSize(): " + rs.getFetchSize());;
-            
-            if (rs.getFetchSize() > 0)
+            while (rs.next())
             {
-                while (rs.next())
-                {
-                    c.setIdCarro(rs.getInt("idCarro"));
-                    c.setPlaca(rs.getString("placa"));
-                    c.setModelo(rs.getString("modelo"));
-                    c.setAnoFabricacao(rs.getInt("anoFabricacao"));
-                    c.setAnoModelo(rs.getInt("anoModelo"));
-                    c.setCor(rs.getString("cor"));
-                    c.setnPortas(rs.getInt("nPortas"));
-                }
-                System.out.println("c.get " + c.getCor());
-            }else
-            {
-                System.out.println("Não houve resultados");
+                c.setIdCarro(rs.getInt("idCarro"));
+                c.setPlaca(rs.getString("placa"));
+                c.setMarca(rs.getString("marca"));
+                c.setModelo(rs.getString("modelo"));
+                c.setAnoFabricacao(rs.getInt("anoFabricacao"));
+                c.setAnoModelo(rs.getInt("anoModelo"));
+                c.setCor(rs.getString("cor"));
+                c.setnPortas(rs.getInt("nPortas"));
+                c.setIdPessoa(rs.getInt("idPessoa"));
             }
         } catch (Exception e)
         {
@@ -170,7 +161,7 @@ public class CarroDAO
             conn.close();
             statement.close();
         }
-        
+
         return c;
     }
 
@@ -203,19 +194,19 @@ public class CarroDAO
         {
             String sql;
             sql = "UPDATE carro SET "
-                    + "placa = '" + pVO.getPlaca() + "', "
+                    + "marca = '" + pVO.getMarca() + "', "
                     + "modelo = '" + pVO.getModelo() + "', "
-                    + "anoFabricacao = " + pVO.getAnoModelo() + ", "
-                    + "anoModelo = " + pVO.getAnoFabricacao() + ", "
+                    + "anoFabricacao = " + pVO.getAnoFabricacao() + ", "
+                    + "anoModelo = " + pVO.getAnoModelo() + ", "
                     + "cor = '" + pVO.getCor() + "', "
-                    + "nPortas = " + pVO.getnPortas()
-                    + "WHERE idCarro = " + pVO.getIdCarro();
+                    + "nPortas = " + pVO.getnPortas() + ", "
+                    + "idPessoa = " + pVO.getIdPessoa()
+                    + " WHERE idCarro = " + pVO.getIdCarro();
 
             statement.executeUpdate(sql);
         } catch (Exception e)
         {
-            throw new SQLException("Erro ao atualizar as informações do Carro.\n"
-                    + e.getMessage());
+            throw new SQLException("Erro ao atualizar as informações do Carro.\n" + e.getMessage());
         } finally
         {
             conn.close();

@@ -5,12 +5,13 @@
  */
 package br.com.senactech.NCadastroPessoa.model;
 
-
 /**
  *
  * @author jairb
  */
-public class Pessoa {
+public class Pessoa
+{
+
     private int idPessoa;//PK
     private String nomePessoa;
     private String cpf;
@@ -18,24 +19,25 @@ public class Pessoa {
     private String telefone;
     private int idade;
     private boolean status;//identifica se a pessoa esta ativa ou não
-    
-    
-    
-    public Pessoa(){
+
+    public Pessoa()
+    {
         //Construtor vazio para usar os métodos acessores geters and seters
     }
 
     /**
      * Construtor com todos os atributos como parâmetro.
+     *
      * @param idPessoa
      * @param nomePessoa
      * @param cpf
      * @param endereco
      * @param telefone
      * @param idade
-     * @param status 
+     * @param status
      */
-    public Pessoa(int idPessoa, String nomePessoa, String cpf, String endereco, String telefone, int idade, boolean status) {
+    public Pessoa(int idPessoa, String nomePessoa, String cpf, String endereco, String telefone, int idade, boolean status)
+    {
         this.idPessoa = idPessoa;
         this.nomePessoa = nomePessoa;
         this.cpf = cpf;
@@ -47,70 +49,87 @@ public class Pessoa {
 
     /**
      * Recupera o id da Pessoa
-     * @return 
+     *
+     * @return
      */
-    public int getIdPessoa() {
+    public int getIdPessoa()
+    {
         return idPessoa;
     }
 
     /**
      * Set o id da Pessoa
-     * @param idPessoa 
+     *
+     * @param idPessoa
      */
-    public void setIdPessoa(int idPessoa) {
+    public void setIdPessoa(int idPessoa)
+    {
         this.idPessoa = idPessoa;
     }
 
-    public String getNomePessoa() {
+    public String getNomePessoa()
+    {
         return nomePessoa;
     }
 
-    public void setNomePessoa(String nomePessoa) {
+    public void setNomePessoa(String nomePessoa)
+    {
         this.nomePessoa = nomePessoa;
     }
 
-    public String getCpf() {
+    public String getCpf()
+    {
         return cpf;
     }
 
-    public void setCpf(String cpf) {
+    public void setCpf(String cpf)
+    {
         this.cpf = cpf;
     }
 
-    public String getEndereco() {
+    public String getEndereco()
+    {
         return endereco;
     }
 
-    public void setEndereco(String endereco) {
+    public void setEndereco(String endereco)
+    {
         this.endereco = endereco;
     }
 
-    public String getTelefone() {
+    public String getTelefone()
+    {
         return telefone;
     }
 
-    public void setTelefone(String telefone) {
+    public void setTelefone(String telefone)
+    {
         this.telefone = telefone;
     }
 
-    public int getIdade() {
+    public int getIdade()
+    {
         return idade;
     }
 
-    public void setIdade(int idade) {
+    public void setIdade(int idade)
+    {
         this.idade = idade;
     }
 
-    public boolean isStatus() {
+    public boolean isStatus()
+    {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(boolean status)
+    {
         this.status = status;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Pessoa{" + "idPessoa=" + idPessoa + ", nomePessoa=" + nomePessoa + ", cpf=" + cpf + ", endereco=" + endereco + ", telefone=" + telefone + ", idade=" + idade + ", status=" + status + '}';
     }
 }
